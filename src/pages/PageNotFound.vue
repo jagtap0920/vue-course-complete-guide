@@ -1,11 +1,10 @@
 <template>
-  <router-view></router-view>
+  <h1>Oops!! The page you are looking for is not found!!</h1>
 </template>
 
 <script>
-
 export default {
-  name: 'App'
+
 }
 </script>
 

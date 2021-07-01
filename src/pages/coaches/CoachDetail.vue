@@ -1,11 +1,10 @@
 <template>
-  <router-view></router-view>
+  <h1>Coach details</h1>
 </template>
 
 <script>
-
 export default {
-  name: 'App'
+
 }
 </script>
 
