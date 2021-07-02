@@ -1,37 +1,73 @@
 <template>
-  <base-card>
-    <div class="controls">
-      <base-button mode="outline">Refresh</base-button>
-      <base-button link to="/register">Register as Coach</base-button>
-    </div>
-    <ul v-if="hasCoaches">
-      <coach-item
-        v-for="coach in filteredCoaches"
-        :key="coach.id"
-        :id="coach.id"
-        :firstName="coach.firstName"
-        :lastName="coach.lastName"
-        :areas="coach.areas"
-        :description="coach.description"
-        :rate="coach.hourlyRate"
-      >
-      </coach-item>
-    </ul>
-    <h3 v-else>No coaches found</h3>
-  </base-card>
+  <section>
+    <coach-filter @filter-change="onFilterChange"></coach-filter>
+  </section>
+  <section>
+    <base-card>
+      <div class="controls">
+        <base-button mode="outline">Refresh</base-button>
+        <base-button link to="/register">Register as Coach</base-button>
+      </div>
+      <ul v-if="hasCoaches">
+        <coach-item
+          v-for="coach in filteredCoaches"
+          :key="coach.id"
+          :id="coach.id"
+          :firstName="coach.firstName"
+          :lastName="coach.lastName"
+          :areas="coach.areas"
+          :description="coach.description"
+          :rate="coach.hourlyRate"
+        >
+        </coach-item>
+      </ul>
+      <h3 v-else>No coaches found</h3>
+    </base-card>
+  </section>
 </template>
 
 <script>
 import CoachItem from '../../components/coaches/CoachItem.vue';
+import CoachFilter from '../../components/coaches/CoachFilter.vue';
 import BaseButton from '../../ui/BaseButton.vue';
 export default {
   components: {
     CoachItem,
     BaseButton,
+    CoachFilter,
+  },
+  data() {
+    return {
+      filters: {
+        frontend: true,
+        backend: true,
+        career: true,
+      },
+    };
+  },
+  methods: {
+    onFilterChange(selectedFilters) {
+      this.filters = selectedFilters;
+    },
   },
   computed: {
     filteredCoaches() {
-      return this.$store.getters['coaches/coaches'];
+      const coaches = this.$store.getters['coaches/coaches'];
+
+      const filteredCoaches = coaches.filter((coach) => {
+        if (this.filters.frontend && coach.areas.includes('frontend')) {
+          return true;
+        }
+        if (this.filters.backend && coach.areas.includes('backend')) {
+          return true;
+        }
+        if (this.filters.career && coach.areas.includes('career')) {
+          return true;
+        }
+        return false;
+      });
+
+      return filteredCoaches;
     },
     hasCoaches() {
       return this.$store.getters['coaches/hasCoaches'];
